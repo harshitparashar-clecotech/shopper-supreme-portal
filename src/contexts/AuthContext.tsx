@@ -82,16 +82,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const data = JSON.parse(responseText);
-      console.log('Login successful, user data:', data.user);
+      console.log('Login successful, full response:', data);
       
-      if (!data.user || !data.token) {
+      // Handle the new API response structure
+      const userData = data.data?.user || data.user;
+      const tokenData = data.data?.tokens?.accessToken || data.token;
+      
+      if (!userData || !tokenData) {
         throw new Error('Invalid response format');
       }
       
-      setUser(data.user);
-      setToken(data.token);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      console.log('Setting user:', userData, 'Token:', tokenData);
+      
+      setUser(userData);
+      setToken(tokenData);
+      localStorage.setItem('token', tokenData);
+      localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error('Login error:', error);
       // For demo purposes, if API is not available, use mock login
@@ -144,16 +150,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const data = JSON.parse(responseText);
-      console.log('Registration successful, user data:', data.user);
+      console.log('Registration successful, full response:', data);
       
-      if (!data.user || !data.token) {
+      // Handle the new API response structure
+      const userData = data.data?.user || data.user;
+      const tokenData = data.data?.tokens?.accessToken || data.token;
+      
+      if (!userData || !tokenData) {
         throw new Error('Invalid response format');
       }
       
-      setUser(data.user);
-      setToken(data.token);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      setUser(userData);
+      setToken(tokenData);
+      localStorage.setItem('token', tokenData);
+      localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error('Registration error:', error);
       // For demo purposes, if API is not available, use mock registration
