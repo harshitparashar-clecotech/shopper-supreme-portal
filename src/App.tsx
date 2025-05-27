@@ -19,8 +19,22 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
+  console.log('AppRoutes - User:', user, 'Loading:', loading);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If no user is logged in, show auth routes
   if (!user) {
     return (
       <Routes>
@@ -31,6 +45,7 @@ const AppRoutes = () => {
     );
   }
 
+  // If user is admin, show admin routes
   if (user.role === 'admin') {
     return (
       <Routes>
@@ -46,11 +61,14 @@ const AppRoutes = () => {
           <Route path="stores" element={<Stores />} />
         </Route>
         <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/login" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/register" element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>
     );
   }
 
+  // If user is regular user, show user routes
   return (
     <Routes>
       <Route path="/" element={

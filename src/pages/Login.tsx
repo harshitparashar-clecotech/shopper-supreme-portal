@@ -18,12 +18,14 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(email, password);
+      console.log('Login successful, about to navigate');
       toast({
         title: "Login successful",
         description: "Welcome back!",
       });
-      navigate('/');
+      // Navigation will be handled automatically by AppRoutes based on user role
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "Login failed",
         description: "Please check your credentials and try again.",
@@ -37,14 +39,18 @@ const Login = () => {
       ? { email: 'admin@demo.com', password: 'password' }
       : { email: 'store@demo.com', password: 'password' };
     
+    console.log('Demo login attempt:', type, credentials);
+    
     try {
       await login(credentials.email, credentials.password);
+      console.log('Demo login successful, about to navigate');
       toast({
         title: "Demo login successful",
         description: `Logged in as ${type}`,
       });
-      navigate('/');
+      // Navigation will be handled automatically by AppRoutes based on user role
     } catch (error) {
+      console.error('Demo login error:', error);
       toast({
         title: "Demo login failed",
         description: "Please try again later.",

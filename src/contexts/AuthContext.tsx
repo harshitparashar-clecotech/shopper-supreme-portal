@@ -38,14 +38,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('AuthProvider useEffect - checking stored user');
     const storedUser = localStorage.getItem('user');
     if (storedUser && token) {
+      console.log('Found stored user:', JSON.parse(storedUser));
       setUser(JSON.parse(storedUser));
     }
     setLoading(false);
   }, [token]);
 
   const login = async (email: string, password: string) => {
+    console.log('Login attempt for:', email);
     setLoading(true);
     try {
       const response = await fetch('http://localhost:3000/api/auth/login', {
@@ -61,11 +64,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const data = await response.json();
+      console.log('Login successful, user data:', data.user);
+      
       setUser(data.user);
       setToken(data.token);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
     } catch (error) {
+      console.error('Login error:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -73,6 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const register = async (email: string, password: string, name: string) => {
+    console.log('Register attempt for:', email);
     setLoading(true);
     try {
       const response = await fetch('http://localhost:3000/api/auth/register', {
@@ -88,11 +95,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       const data = await response.json();
+      console.log('Registration successful, user data:', data.user);
+      
       setUser(data.user);
       setToken(data.token);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
     } catch (error) {
+      console.error('Registration error:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -100,6 +110,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
+    console.log('Logging out user');
     setUser(null);
     setToken(null);
     localStorage.removeItem('token');
